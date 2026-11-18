@@ -3,6 +3,7 @@
 新任のテックリーダーに向けた、根拠つきのスライド資料（256 枚、2026 年 11 月時点）。
 
 - Web 版：<https://takenori-kusaka.github.io/data-intensive-design-guide/>
+- Docswell：<https://www.docswell.com/s/takenori_kusaka/ZX2J7G-2026-11-18-210106>
 - PDF：[slides/data-intensive-design-guide.pdf](slides/data-intensive-design-guide.pdf)
 - PowerPoint：[slides/data-intensive-design-guide.pptx](slides/data-intensive-design-guide.pptx)（発表者ノートつき）
 
