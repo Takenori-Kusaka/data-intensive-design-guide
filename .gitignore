@@ -1,0 +1,10 @@
+research/books/
+deck/node_modules/
+deck/qa/
+*.tmp
+research/deck_text.md
+deck/*.pptx
+deck/make.sh
+research/deck_text_*.md
+research/reviews/fc/_quote_hits.txt
+research/private/
