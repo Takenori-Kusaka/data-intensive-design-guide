@@ -118,17 +118,17 @@ module.exports = (L) => {
 
   {
     const s = L.content('同じ名前の分離レベルが製品で別のものを指す', {
-      lead: '公式文書・Hermitage・Jepsen で確かめたセルだけ（2026-11 確認）。PostgreSQL 以外は未検証',
+      lead: '公式文書・Hermitage・Jepsen の記述（2026-11 確認）。実測は PostgreSQL・MySQL・CockroachDB だけ',
       stages: ST, tag: TAG,
-      notes: '既定の分離レベルと、Repeatable Read、Serializable の中身を並べました。まず Repeatable Read です。PostgreSQL、Spanner、Aurora DSQL ではスナップショット分離です。SQL Server では、読んだ行の共有ロックを最後まで持つ方式で、文書はファントムが起こると書いています。MySQL は、Hermitage の試験でも、Jepsen の 2023 年の報告でも、ロストアップデートを防ぎませんでした。実際の水準の名前は、2 つの報告で食い違います。次に Serializable です。Oracle の Serializable は、Hermitage の試験ではスナップショット分離で、別々の行を読んだライトスキューを防ぎませんでした。CockroachDB は、公式文書（v26.4 の表示）が分離レベルを 2 つと書く一方、Hermitage には repeatable read の行があり、食い違っています。理由は確かめられていません。Hermitage は各製品をどの版で試したかを README に書いていません。PostgreSQL 以外は未検証です。出典の補足：SQL Server・CockroachDB・Spanner・Aurora DSQL は、各製品の公式文書です。',
+      notes: '既定の分離レベルと、Repeatable Read、Serializable の中身を並べました。まず Repeatable Read です。PostgreSQL、Spanner、Aurora DSQL ではスナップショット分離です。SQL Server では、読んだ行の共有ロックを最後まで持つ方式で、文書はファントムが起こると書いています。MySQL は、Hermitage の試験でも、Jepsen の 2023 年の報告でも、ロストアップデートを防ぎませんでした。実際の水準の名前は、2 つの報告で食い違います。次に Serializable です。Oracle の Serializable は、Hermitage の試験ではスナップショット分離で、別々の行を読んだライトスキューを防ぎませんでした。CockroachDB は、公式文書（v26.4 の表示）が分離レベルを 2 つと書く一方、Hermitage には repeatable read の行があり、食い違っています。理由は一次資料では確かめられませんでしたが、題材 D で実測すると、v26.4.0 の既定の設定では、REPEATABLE READ を指定しても表示は serializable で、クラスタ設定を有効にすると repeatable read になりました。Hermitage の手順書は、試験の前にこの種の設定を有効にしています。題材 D で実測したのは PostgreSQL 18.7、MySQL 8.4.13、CockroachDB v26.4.0 で、ほかは未検証です。出典の補足：SQL Server・CockroachDB・Spanner・Aurora DSQL は、各製品の公式文書です。',
       refs: { spec: 'PostgreSQL 18 文書 13.2／MySQL 8.4 マニュアル 17.7.2.1／Oracle AI Database Concepts ほか', inst: 'Hermitage README（試験の版は記載なし）／Jepsen「MySQL 8.0.34」（2023-12-19）', book: 'DDIA 2e p.276・p.293・p.299' },
     });
     L.table(s, [['製品', '既定', '「Repeatable Read」の中身', '「Serializable」の中身'],
       ['PostgreSQL 18', 'Read Committed', 'スナップショット分離（文書、Hermitage）', 'SSI。直列化の異常を検査して失敗を返す（文書）'],
-      ['MySQL 8.4（InnoDB）', 'REPEATABLE READ', 'ロストアップデートを防がない（Hermitage・Jepsen が一致）。水準の名前は食い違う。題材 D で測る', '通常の SELECT を SELECT ... FOR SHARE に変える（文書。autocommit 無効時）'],
+      ['MySQL 8.4（InnoDB）', 'REPEATABLE READ', 'ロストアップデートを防がない（Hermitage・Jepsen が一致。8.4.13 の実測でも同じ）。水準の名前は食い違う', '通常の SELECT を SELECT ... FOR SHARE に変える（文書。autocommit 無効時）'],
       ['Oracle AI Database', 'Read Committed', '文書が挙げる水準は Read Committed・Serializable・読み取り専用', 'Hermitage：snapshot isolation。\nライトスキュー（G2-item）を防がない'],
       ['SQL Server', 'READ COMMITTED', '共有ロックを終了まで保持。ファントムは起こる（文書）', 'Hermitage：serializable。SNAPSHOT は別の水準'],
-      ['CockroachDB', 'SERIALIZABLE', '文書（v26.4 表示）は水準を 2 つと書く。Hermitage には行がある（食い違い。理由は未確認）', 'Hermitage：serializable。競合は 40001（文書）'],
+      ['CockroachDB', 'SERIALIZABLE', '文書（v26.4 表示）は 2 つと書く。Hermitage の行は、クラスタ設定を有効にすると選べた（実測。既定は無効）', 'Hermitage：serializable。競合は 40001（文書）'],
       ['Spanner', 'serializable', 'スナップショット分離。ライトスキューが起こりうると文書が明記', '外部整合性を伴う（文書）'],
       ['Aurora DSQL', 'Repeatable Read に固定', 'スナップショット分離。変更できない（文書）', '選べない（文書）']],
     { x: 0.6, y: 1.95, w: 12.1, colW: [1.9, 2.3, 4.0, 3.9], fontSize: 10.5, rowH: 0.55 });
@@ -138,7 +138,7 @@ module.exports = (L) => {
     const s = L.content('DB を入れ替えると、既定の正しさの水準が変わる', {
       lead: '既定の分離レベルは製品ごとに違う。置換性を考えるなら、移行の計画に「分離レベルの差」の項目を入れる',
       stages: ST, tag: TAG,
-      notes: '既定の分離レベルを 3 つの組に分けました。Read Committed の組のうち SQL Server は、READ_COMMITTED_SNAPSHOT というデータベースのオプションで中身が変わります。SQL Server の既定は OFF で共有ロックを使い、Azure SQL Database の既定は ON で、文ごとのスナップショットを読みます。これは置換性の論点です。データベースを入れ替えると、アプリケーションのコードを 1 行も変えなくても、防がれる異常の範囲が変わります。たとえば PostgreSQL から Aurora DSQL へ移すと、ロックで待つ代わりに、コミットの時点で競合が判定され、SQLSTATE 40001 が返ります。この表は本ガイドでは検証していません。PostgreSQL と MySQL の差は、題材 D で実機で測ります。出典の補足：SQL Server は「SET TRANSACTION ISOLATION LEVEL」（2025-09-26 付）、Aurora DSQL は「Concurrency control」のページです。',
+      notes: '既定の分離レベルを 3 つの組に分けました。Read Committed の組のうち SQL Server は、READ_COMMITTED_SNAPSHOT というデータベースのオプションで中身が変わります。SQL Server の既定は OFF で共有ロックを使い、Azure SQL Database の既定は ON で、文ごとのスナップショットを読みます。これは置換性の論点です。データベースを入れ替えると、アプリケーションのコードを 1 行も変えなくても、防がれる異常の範囲が変わります。たとえば PostgreSQL から Aurora DSQL へ移すと、ロックで待つ代わりに、コミットの時点で競合が判定され、SQLSTATE 40001 が返ります。この表のうち、MySQL と PostgreSQL の差と、CockroachDB の 40001 と再試行は、題材 D で実機で測り、表の記述と食い違いませんでした。Aurora DSQL の行は未検証です。出典の補足：SQL Server は「SET TRANSACTION ISOLATION LEVEL」（2025-09-26 付）、Aurora DSQL は「Concurrency control」のページです。',
       refs: { spec: 'PostgreSQL 18 文書 13.2／MySQL 8.4 マニュアル 17.7.2.1／SQL Server・Aurora DSQL の文書', book: 'DDIA 2e 8.2.1.3 節 p.286（考え方）' },
     });
     const gs = [[C.accent5, 'Read Committed が既定', ['PostgreSQL 18', 'Oracle AI Database', 'SQL Server（中身はオプションで変わる）']],
@@ -146,7 +146,7 @@ module.exports = (L) => {
       [C.accent4, 'Serializable が既定', ['CockroachDB', 'Spanner']]];
     const gx = [0.6, 4.6, 9.1], gw = [3.8, 4.3, 3.6];
     gs.forEach((g, i) => L.card(s, { x: gx[i], y: 1.95, w: gw[i], h: 1.95, color: g[0], title: g[1], titleSize: 15, titleColor: g[0], titleH: 0.4, body: g[2], bodySize: 12.5 }));
-    L.table(s, [['入れ替えの例', '既定の変化', 'アプリケーション側で見直すこと（公式文書の記述から。未検証）'],
+    L.table(s, [['入れ替えの例', '既定の変化', 'アプリケーション側で見直すこと（公式文書の記述から。Aurora DSQL は未検証）'],
       ['PostgreSQL → Aurora DSQL', 'Read Committed → Repeatable Read 固定', 'ロック待ちを前提にした箇所。競合はコミット時に 40001 で返るので、再試行と冪等性'],
       ['PostgreSQL → CockroachDB', 'Read Committed → SERIALIZABLE', '40001 を受けたときの、クライアント側の再試行'],
       ['MySQL → PostgreSQL', 'REPEATABLE READ → Read Committed', '同じ名前の Repeatable Read を指定すると、競合した更新は失敗として返る。再試行が要る']],
@@ -157,15 +157,15 @@ module.exports = (L) => {
     const s = L.content('MySQL の既定はロストアップデートを防がない', {
       lead: '既定の REPEATABLE READ で読んで書き戻すと、更新が黙って消えうる。この点は 3 つの報告が一致',
       stages: ST, tag: TAG,
-      notes: 'MySQL の InnoDB の既定は REPEATABLE READ です。この水準は、ロストアップデートを検出しません。Hermitage は、ロストアップデートの試験を防がなかったと報告しています。Jepsen の 2023 年 12 月の報告も同じ結論です。対象は MySQL 8.0.34 で、障害を入れていない 1 台の構成でも起きました。リスト追記の負荷をかけた 1 回の試験で、成功した 9,048 トランザクションのうち 446 件が、198 件のロストアップデートの事例に関わっていました。ACIDRain 論文の脚注も同じことを述べています。DDIA 第2版の 296 ページも、文献を引いて同じことを書いています。3 つの報告が一致するのは、この点だけです。実際の水準の名前は一致していません。Hermitage は monotonic atomic view としますが、Jepsen は、それも満たさないと報告しています。PostgreSQL の Repeatable Read は、同じ場面でエラーを返して片方を失敗させます。Jepsen の結果が MySQL 8.4 や 9 系でも同じかは、一次資料で確認できていません。ロストアップデート以外のふるまいも含めて、題材 D で PostgreSQL と MySQL を実機で測ります。',
-      refs: { spec: 'Hermitage README／ACIDRain（Warszawski・Bailis、SIGMOD 2017）脚注 6', inst: 'Jepsen「MySQL 8.0.34」（2023-12-19）3.3 節・3.5 節', book: 'DDIA 2e 8.2.3.3 節 p.295–296' },
+      notes: 'MySQL の InnoDB の既定は REPEATABLE READ です。この水準は、ロストアップデートを検出しません。Hermitage は、ロストアップデートの試験を防がなかったと報告しています。Jepsen の 2023 年 12 月の報告も同じ結論です。対象は MySQL 8.0.34 で、障害を入れていない 1 台の構成でも起きました。リスト追記の負荷をかけた 1 回の試験で、成功した 9,048 トランザクションのうち 446 件が、198 件のロストアップデートの事例に関わっていました。ACIDRain 論文の脚注も同じことを述べています。DDIA 第2版の 296 ページも、文献を引いて同じことを書いています。3 つの報告が一致するのは、この点だけです。実際の水準の名前は一致していません。Hermitage は monotonic atomic view としますが、Jepsen は、それも満たさないと報告しています。PostgreSQL の Repeatable Read は、同じ場面でエラーを返して片方を失敗させます。Jepsen の結果が MySQL 8.4 や 9 系でも同じかは、一次資料で確認できていません。題材 D で 8.4.13 を実機で測ると、既定の水準でロストアップデートが起き、エラーは返りませんでした。PostgreSQL の Repeatable Read では 0 件でした。',
+      refs: { spec: 'Hermitage README／ACIDRain（Warszawski・Bailis、SIGMOD 2017）脚注 6', inst: 'Jepsen「MySQL 8.0.34」（2023-12-19）3.3 節・3.5 節／ケーススタディ Part 4', book: 'DDIA 2e 8.2.3.3 節 p.295–296' },
     });
     const es = [['MdChecklist', C.accent1, 'Hermitage', ['ロストアップデート（P4）の試験を防がなかった', '既定の repeatable read の実際の水準を monotonic atomic view とする（手作業の試験の範囲での分類）']],
       ['MdBugReport', C.accent3, 'Jepsen（2023-12）', ['対象は 8.0.34。障害の無い 1 台でも発生', '1 回の試験で、成功した 9,048 トランザクションのうち 446 件が、198 件のロストアップデートの事例に関与', 'monotonic atomic view も満たさないと報告']],
       ['MdSecurity', C.accent6, 'ACIDRain 脚注 6（2017）', ['MySQL の Repeatable Read で、ロストアップデートを起こせたと著者が記す']]];
     es.forEach((e, i) => L.card(s, { x: 0.6 + i * 4.1, y: 1.95, w: 3.9, h: 2.5, icon: e[0], color: e[1], title: e[2], titleSize: 15, body: e[3], bodySize: 12 }));
-    L.note(s, 'warn', '3 つが一致するのは「ロストアップデートを防がない」点だけ。それ以外のふるまいは題材 D で測る。Jepsen の対象は 8.0.34 で、8.4・9 系でも同じかは一次資料で未確認', { x: 0.6, y: 4.65, w: 12.1, h: 0.85, size: 13, label: '条件' });
-    L.note(s, 'tip', '題材 D で、PostgreSQL と MySQL の同じ名前の分離レベルを実機で測る（結果はケーススタディ）', { x: 0.6, y: 5.7, w: 12.1, h: 0.8, size: 13.5, label: 'ケーススタディ' });
+    L.note(s, 'warn', '3 つが一致するのは「ロストアップデートを防がない」点だけ。Jepsen の対象は 8.0.34 で、8.4・9 系でも同じかは一次資料では確かめられなかったが、8.4.13 はケーススタディで実測した（下）。9 系は未確認', { x: 0.6, y: 4.57, w: 12.1, h: 0.83, size: 12, label: '条件' });
+    L.note(s, 'tip', 'MySQL 8.4.13 の既定（REPEATABLE READ）に並行の負荷をかけると、ロストアップデートが 1 回目 2449 件・2 回目 2417 件起きた（応答済み 6000 件、15 試行の合計）。エラーは返らなかった。同じ負荷で、PostgreSQL の Repeatable Read は 0 件。MySQL は、自分の書き込みを挟むと、1 回の SELECT の結果に、別のトランザクションの更新の前の値と後の値が混ざった（ケーススタディ Part 4）', { x: 0.6, y: 5.5, w: 12.1, h: 1.0, size: 10.5, label: 'ケーススタディ（実測）' });
   }
 
   {
@@ -205,7 +205,7 @@ module.exports = (L) => {
       ['分離レベルを上げる', 'PostgreSQL は Repeatable Read と Serializable で自動検出', '失敗（40001）が返るので再試行が要る。MySQL の Repeatable Read は検出しない', '読んで書く箇所が多く、個別に直しきれない'],
       ['制約（本ガイドが追加）', 'CHECK・一意性制約で不変条件を DB に宣言', '表せる条件が限られる。更新が消えること自体は検出しない', '最後の守り。コードを通らない書き込みにも効く']],
     { x: 0.6, y: 1.95, w: 12.1, colW: [1.9, 3.7, 3.9, 2.6], fontSize: 11, rowH: 0.62 });
-    L.note(s, 'tip', '題材 D で、手段を 1 つずつ足したときの異常の件数・失敗の件数・再試行の回数を測る（結果はケーススタディ）', { x: 0.6, y: 5.85, w: 12.1, h: 0.65, size: 13, label: '' });
+    L.note(s, 'tip', '題材 D の実測（PostgreSQL、15 試行の合計）：アトミックな更新と明示的なロックは、ロストアップデート 0 件・再試行 0 回。バージョン列は 0 件で、再試行が 1 回目 1885 回・2 回目 1854 回。素朴な読み書きに CHECK を足しただけでは 1389 件・1385 件（ケーススタディ Part 4）', { x: 0.6, y: 5.82, w: 12.1, h: 0.68, size: 11, label: '' });
   }
 
   {
