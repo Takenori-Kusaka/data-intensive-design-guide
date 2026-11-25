@@ -124,7 +124,7 @@ module.exports = (L) => {
     L.T(s, '検査しない：v3 の読み手が v1 のデータを読めるか', { x: 0.6, y: 5.08, w: 7.1, h: 0.42, fontSize: 12.5, bold: true, color: C.accent3, align: 'center', valign: 'middle', margin: 0 });
     L.card(s, { x: 8.0, y: 4.12, w: 4.7, h: 1.4, color: C.accent3, title: '読み直すと古い版が出てくる', titleSize: 14, titleH: 0.36, titleColor: C.accent3,
       body: ['先頭から読むと v1 のデータに当たる', 'すべての版を読むなら TRANSITIVE'], bodySize: 12 });
-    L.note(s, 'tip', '3 形式で、段ごとには通る v1→v2→v3 を Redpanda の既定（BACKWARD）に登録した。v3 の受け手が先頭から読むと、v1 の 100 件は Avro と JSON Schema でエラー、Protocol Buffers で誤った値。BACKWARD_TRANSITIVE は v3 を拒否した。Confluent と Apicurio は未検証（ケーススタディ Part 2）', { x: 0.6, y: 5.62, w: 12.1, h: 0.87, size: 10.5, label: 'ケーススタディ（実測）' });
+    L.note(s, 'tip', '3 形式で、段ごとには通る v1→v2→v3 を Redpanda の既定（BACKWARD）に登録した。v3 の受け手が先頭から読むと、v1 の 100 件は Avro と JSON Schema でエラー、Protocol Buffers はエラーなしで誤った値。BACKWARD_TRANSITIVE は v3 を拒否した。Confluent と Apicurio は未検証（ケーススタディ Part 2）', { x: 0.6, y: 5.62, w: 12.1, h: 0.87, size: 10.5, label: 'ケーススタディ（実測）' });
   }
 
   {

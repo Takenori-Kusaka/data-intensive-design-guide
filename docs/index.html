@@ -1204,7 +1204,7 @@ CREATE TABLE orders (
 );
 CREATE INDEX ON orders
   USING GIN (options jsonb_path_ops);
-架空の例（この例は未実行。近い作りは題材 C で実測）
+架空の例（この例は未実行。jsonb の容量と集計は題材 C で実測）
 危ない兆候（右の記述から）
 1 つの文書に追記し続ける配列。複数の書き手が同じ文書を更新する設計。どちらも、行のロックの競合を増やす
 論点 | PostgreSQL 18 の文書（8.14）が述べること
@@ -2315,7 +2315,7 @@ v3
 先頭から読むと v1 のデータに当たる
 すべての版を読むなら TRANSITIVE
 ケーススタディ（実測）
-3 形式で、段ごとには通る v1→v2→v3 を Redpanda の既定（BACKWARD）に登録した。v3 の受け手が先頭から読むと、v1 の 100 件は Avro と JSON Schema でエラー、Protocol Buffers で誤った値。BACKWARD_TRANSITIVE は v3 を拒否した。Confluent と Apicurio は未検証（ケーススタディ Part 2）
+3 形式で、段ごとには通る v1→v2→v3 を Redpanda の既定（BACKWARD）に登録した。v3 の受け手が先頭から読むと、v1 の 100 件は Avro と JSON Schema でエラー、Protocol Buffers はエラーなしで誤った値。BACKWARD_TRANSITIVE は v3 を拒否した。Confluent と Apicurio は未検証（ケーススタディ Part 2）
 95</div><div class="nt"><b>解説</b><p>表は 2026 年 11 月に確かめた公式文書の記述です。Confluent と Redpanda の既定は BACKWARD で、TRANSITIVE ではありません。つまり、直前の版とだけ比べます。Apicurio Registry は、全体の規則を設定しなければ、規則は何も適用されません。直前の版とだけ比べると、何が起きるでしょうか。たとえば Avro で、版 1 に無いフィールドを版 2 で既定値つきで足し、版 3 でその既定値を外します。段ごとの検査は通りますが、版 3 の読み手は版 1 のデータを読めません。トピックを先頭から読み直すと、版 1 のデータが出てきます。Confluent の文書も、すべての版のデータを読む必要があるなら BACKWARD_TRANSITIVE を使うよう書いています。Confluent と Apicurio は未検証です。Redpanda は題材 B で測り、既定では 3 版とも通って、v3 の受け手は v1 を正しく読めませんでした。作り直しは Part 12 で扱います。</p></div></details></section>
 <section class="slide" id="s96" data-n="96"><img src="slides/s096.webp" loading="lazy" width="1920" height="1080" alt="契約の強制は、書き手側と CI に置く"><details><summary>スライド 96 のテキストと解説</summary><div class="tx">契約の強制は、書き手側と CI に置く
 要件

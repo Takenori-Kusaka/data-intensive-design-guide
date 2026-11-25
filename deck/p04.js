@@ -122,7 +122,7 @@ module.exports = (L) => {
       refs: { spec: 'PostgreSQL 18 文書 8.14 JSON Types（18.7 のページ。2026-11 確認）', book: 'DDIA 2e 3.1.5.4 節 p.81（収束）' },
     });
     L.code(s, ['-- 決まった構造は列に、揺れる部分だけ文書に', 'CREATE TABLE orders (', '  id         bigint PRIMARY KEY,', '  store_id   bigint NOT NULL REFERENCES stores(id),', '  status     text NOT NULL,', '  ordered_at timestamptz NOT NULL,', '  options    jsonb  -- 店舗ごとに違うオプション', ');', 'CREATE INDEX ON orders', '  USING GIN (options jsonb_path_ops);'].join('\n'), { x: 0.6, y: 1.95, w: 5.6, h: 2.75, fontSize: 12 });
-    L.T(s, '架空の例（この例は未実行。近い作りは題材 C で実測）', { x: 0.6, y: 4.74, w: 5.6, h: 0.28, fontSize: 11, color: L.MUTED, margin: 0 });
+    L.T(s, '架空の例（この例は未実行。jsonb の容量と集計は題材 C で実測）', { x: 0.6, y: 4.74, w: 5.6, h: 0.28, fontSize: 11, color: L.MUTED, margin: 0 });
     L.note(s, 'warn', '1 つの文書に追記し続ける配列。複数の書き手が同じ文書を更新する設計。どちらも、行のロックの競合を増やす', { x: 0.6, y: 5.15, w: 5.6, h: 1.3, size: 12.5, label: '危ない兆候（右の記述から）' });
     L.table(s, [['論点', 'PostgreSQL 18 の文書（8.14）が述べること'],
       ['構造', '柔軟さが要る場合でも、JSON 文書はある程度決まった構造を持つことを勧める'],
