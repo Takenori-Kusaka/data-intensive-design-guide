@@ -8,6 +8,7 @@
 - PowerPoint：[slides/data-intensive-design-guide.pptx](slides/data-intensive-design-guide.pptx)（発表者ノートつき）
 - ケーススタディ（実測、スライド 106 枚）：<https://github.com/Takenori-Kusaka/data-intensive-design-casestudy>（Web 版 <https://takenori-kusaka.github.io/data-intensive-design-casestudy/>、Docswell <https://www.docswell.com/s/takenori_kusaka/5Y8XLE-2026-11-25-213232>）
 - 設計レビューの一覧表（xlsx、161 行）：[data-intensive-design-review.xlsx](https://github.com/Takenori-Kusaka/data-intensive-design-casestudy/blob/main/catalog/data-intensive-design-review.xlsx)（ケーススタディのリポジトリ）
+- 記事：[Zenn](https://zenn.dev/takenori_kusaka/articles/data-intensive-design-guide)（全体）、[Qiita](https://qiita.com/Takenori-Kusaka/items/495c91b9047023bfbcd4)（アウトボックスのポーリングの読み飛ばし）、[note](https://note.com/t_k_official/n/nfa9a66e3a6be)（管理職向け）
 
 ## 何の資料か
 
