@@ -6,7 +6,7 @@
 - Docswell：<https://www.docswell.com/s/takenori_kusaka/ZX2J7G-2026-11-18-210106>
 - PDF：[slides/data-intensive-design-guide.pdf](slides/data-intensive-design-guide.pdf)
 - PowerPoint：[slides/data-intensive-design-guide.pptx](slides/data-intensive-design-guide.pptx)（発表者ノートつき）
-- ケーススタディ（実測、スライド 106 枚）：<https://github.com/Takenori-Kusaka/data-intensive-design-casestudy>（Web 版 <https://takenori-kusaka.github.io/data-intensive-design-casestudy/>）
+- ケーススタディ（実測、スライド 106 枚）：<https://github.com/Takenori-Kusaka/data-intensive-design-casestudy>（Web 版 <https://takenori-kusaka.github.io/data-intensive-design-casestudy/>、Docswell <https://www.docswell.com/s/takenori_kusaka/5Y8XLE-2026-11-25-213232>）
 - 設計レビューの一覧表（xlsx、161 行）：[data-intensive-design-review.xlsx](https://github.com/Takenori-Kusaka/data-intensive-design-casestudy/blob/main/catalog/data-intensive-design-review.xlsx)（ケーススタディのリポジトリ）
 
 ## 何の資料か
