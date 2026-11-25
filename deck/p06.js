@@ -99,8 +99,8 @@ module.exports = (L) => {
     const cs = [['MdTimeline', C.accent1, '順序が 1 つに決まる', ['DB がコミットした順にログへ出る', '受け手は同じ順に適用する']],
       ['MdHub', C.accent4, '受け手を足せる・読み直せる', ['新しい受け手は、ログの読み手を足すだけ', '位置を戻せば読み直せる（Part 12）']],
       ['MdSpeed', C.accent3, '払うもの', ['通常は非同期。反映は遅れる', '順序の保証はパーティションの中だけ', '1 件失うと、導出データは正とずれる。上書きする索引は後の更新で戻りうるが、通知は戻らない']]];
-    cs.forEach((c, i) => L.card(s, { x: 0.6 + i * 4.1, y: 3.15, w: 3.9, h: 2.0, icon: c[0], color: c[1], title: c[2], titleSize: 15, body: c[3], bodySize: 12.5 }));
-    L.note(s, 'tip', 'ログベースのブローカー：メッセージを追記のみのログに保存し、受け手が順に読む方式。Apache Kafka など。読んでも消えない', { x: 0.6, y: 5.35, w: 12.1, h: 1.1, size: 13, label: '用語' });
+    cs.forEach((c, i) => L.card(s, { x: 0.6 + i * 4.1, y: 3.15, w: 3.9, h: 2.2, icon: c[0], color: c[1], title: c[2], titleSize: 15, body: c[3], bodySize: 12 }));
+    L.note(s, 'tip', 'ログベースのブローカー：メッセージを追記のみのログに保存し、受け手が順に読む方式。Apache Kafka など。読んでも消えない', { x: 0.6, y: 5.5, w: 12.1, h: 0.95, size: 13, label: '用語' });
   }
 
   {
